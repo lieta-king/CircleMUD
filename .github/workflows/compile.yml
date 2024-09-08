@@ -1,8 +1,9 @@
+
+
 name: Compile CircleMUD for Windows
 
 on:
   workflow_dispatch:
-
   push:
     branches:
       - main
@@ -23,8 +24,14 @@ jobs:
 
       - name: Compile CircleMUD
         run: |
-          make clean
           CC=x86_64-w64-mingw32-gcc make
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: CircleMUD-Windows
+          path: ./circlemud-executable # 将此处替换为你的可执行文件路径
+      
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
