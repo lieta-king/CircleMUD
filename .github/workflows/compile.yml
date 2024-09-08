@@ -1,5 +1,5 @@
 
-
+          
 name: Compile CircleMUD for ARM64
 
 on:
@@ -24,14 +24,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu make
 
+      - name: Configure CircleMUD for ARM64
+        run: |
+          ./configure CC=aarch64-linux-gnu-gcc
+
       - name: Compile CircleMUD for ARM64
         run: |
-          make clean || true  # 确保没有之前的编译产物
-          CC=aarch64-linux-gnu-gcc make
+          cd src
+          make all
 
       - name: Upload ARM64 binary
         uses: actions/upload-artifact@v3
         with:
           name: CircleMUD-ARM64
-          path: ./circlemud-executable  # 替换为生成的 ARM64 可执行文件的路径
-          
+          path: ./src/circlemud-executable  # 替换为可执行文件路径
