@@ -1,6 +1,4 @@
-
-
-name: Compile CircleMUD for Windows
+name: Compile CircleMUD with Cygwin
 
 on:
   workflow_dispatch:
@@ -13,28 +11,24 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y mingw-w64 make
+      - name: Install Cygwin
+        run: |
+          choco install cygwin
+          choco install make
+          choco install gcc
 
       - name: Compile CircleMUD
         run: |
-          CC=x86_64-w64-mingw32-gcc make
+          C:/cygwin64/bin/bash -lc "cd $GITHUB_WORKSPACE && make"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: CircleMUD-Windows
-          path: ./circlemud-executable # 将此处替换为你的可执行文件路径
-      
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: CircleMUD-Windows
-          path: ./circlemud-executable # 将此处替换为你的可执行文件路径
+          path: ./circlemud-executable  # 替换为可执行文件路径
