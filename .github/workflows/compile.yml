@@ -1,4 +1,6 @@
-name: Compile CircleMUD with Cygwin
+
+
+name: Compile CircleMUD for ARM64
 
 on:
   workflow_dispatch:
@@ -11,24 +13,25 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Cygwin
+      - name: Install cross-compile tools
         run: |
-          choco install cygwin
-          choco install make
-          choco install gcc
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu make
 
-      - name: Compile CircleMUD
+      - name: Compile CircleMUD for ARM64
         run: |
-          C:/cygwin64/bin/bash -lc "cd $GITHUB_WORKSPACE && make"
+          make clean || true  # 确保没有之前的编译产物
+          CC=aarch64-linux-gnu-gcc make
 
-      - name: Upload artifact
+      - name: Upload ARM64 binary
         uses: actions/upload-artifact@v3
         with:
-          name: CircleMUD-Windows
-          path: ./circlemud-executable  # 替换为可执行文件路径
+          name: CircleMUD-ARM64
+          path: ./circlemud-executable  # 替换为生成的 ARM64 可执行文件的路径
+          
