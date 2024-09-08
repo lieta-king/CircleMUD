@@ -1,0 +1,31 @@
+name: Compile CircleMUD for Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64 make
+
+      - name: Compile CircleMUD
+        run: |
+          make clean
+          CC=x86_64-w64-mingw32-gcc make
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: CircleMUD-Windows
+          path: ./circlemud-executable # 将此处替换为你的可执行文件路径
